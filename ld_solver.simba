@@ -1,0 +1,481 @@
+program new;
+
+const isDebugMode = true;
+
+procedure ReplaceThisWaitMethod()
+begin
+  Wait(2000);
+end;
+
+procedure Debug(txt: string)
+begin
+  if (isDebugMode) then
+  begin
+    WriteLn('DEBUG: ' + txt)
+  end;
+end;
+
+procedure PressEnter()
+begin
+  PressKey(13);
+end;
+
+procedure ActivateConsole()
+var
+  bmp, bmpX, bmpY, consoleX, consoleY: Integer;
+begin
+  bmp := BitmapFromString(57, 17, 'meJztVMERwzAIYyamYRdW8SaMwj' +
+        'JVwoVyiZ2mqX+N7nKX2ggLWY37gwcP3lBzZXa3Kd1YjTaY8pSeiYl' +
+        'SoVOI3Juvj7LMciAwSyq0MYmbHvsTMa1P7MaJJFoXAZJWr2NEhFRo' +
+        'Jd7TrwN9hDgsTURPb7DXpeEgeG6hYbeYL22p0BExpGKoGCe3vpLaZ' +
+        'dUrS9vrYr7v6CfEhmL83GLWvcqPUjOoXf1pVFeqbXcKoOaEqGYRjM' +
+        'CNDHQHrKk4dzUpkAKR0DMiVldv4/gFMORqHLkqdbFsHRNlTciuZXX' +
+        'ZxfYt2fW7GgflHzmnGGU1WLVsRLSSFsz1i70P/g0vcGmgMA==');
+
+  if FindBitmap(bmp, bmpX, bmpY) then
+  begin
+    Debug('Found console bitmap at (' + IntToStr(bmpX) +',' + IntToStr(bmpY) + ')');
+    consoleX := bmpX + 100;
+    consoleY := bmpY + 100;
+
+    MoveMouse(consoleX, consoleY);
+    ClickMouse(consoleX, consoleY, mouse_Left);
+    PressEnter();
+    FreeBitmap(bmp);
+  end
+  else
+  begin
+    Debug('Not found console, halt!');
+    Halt();
+  end;
+end;
+
+procedure ValidateOperation()
+var
+  bmp, bmpX, bmpY, consoleX, consoleY: Integer;
+begin
+  bmp := BitmapFromString(40, 18, 'meJztk80RxSAIhKmLgqiHamyGYv' +
+        'bBxPw8RXOKJ3c8xG+AFYYAW1sfihVE9xFaaM2A1W/h1b4st3tB9M4' +
+        'ELSCuQ0ihSy2uMavz/aPIRkeWh12+lUuUsgIpMM2hW+g5IvsfV5o+' +
+        '77fyjvSwqenbEk8Zp/e+CV/o+5rYwMmc577Nf+THa8WqPMjRUQqR7' +
+        'dUocmvrI/0AlKXWcw==');
+
+  if FindBitmap(bmp, bmpX, bmpY) then
+  begin
+    Debug('Found error (' + IntToStr(bmpX) +',' + IntToStr(bmpY) + ')');
+    FreeBitmap(bmp);
+    Halt();
+  end
+  else
+  begin
+    FreeBitmap(bmp);
+  end;
+end;
+
+procedure SendSilentCommand(command: string)
+begin
+  SendKeys(command, 1, 1);
+  PressEnter();
+end;
+
+procedure SendCommand(command: string)
+begin
+  ValidateOperation();
+  ActivateConsole();
+  SendKeys(command, 1, 1);
+  PressEnter();
+end;
+
+procedure CloseOkMessageBox()
+begin
+  SendCommand('(cx-gui-do cx-activate-item "Information*OK")');
+end;
+
+procedure StartFlowCalculation()
+begin
+  SendCommand('(cx-gui-do cx-activate-item "Ribbon*Frame1*Frame5(Solving)*Table1*Table3(Run Calculation)*PushButton7(Calculate)")(cx-gui-do cx-set-list-tree-selections "NavigationPane*List_Tree1" (list ))');
+  //SendCommand('(cx-gui-do cx-activate-item "Information*OK")'); // Can't handle currently settings change
+end;
+
+function IsFlowCalculationCompleted: Boolean
+var
+  bmp, bmpX, bmpY: Integer;
+begin
+  bmp := BitmapFromString(169, 19, 'meJztVoutwyAMZC4P5Hk8DcswD' +
+        'O/ACY8EQ6NWqdrKJ1WKUn9z5nDODofD4XA4HA6Hw+FwOByO70NMOR' +
+        'CHEJgCS0xCM0uSVMxCgNMTiV50ByRlDvS0+3vwepvvQcqZiXPaiqQ' +
+        'l9QomeaWpK+6gOPKDMj4cn98mx2xyzRGjS5heKbWlw1/HpppowJoZ' +
+        'UySBo848gpcIFBbuYyL1akAstUTY8TRJJ1lIneuhQzgi0pL05Qxj8' +
+        'WNMJKuPxQpMBRINiwc8Ua0Kb1LkRZsqBXvMuGhztLwJVCdvfJ8KCZ' +
+        'UISafZ6JuCBSFElPasX6/Z4Ce0+iZmosVx6N334FuI9heGRN0xV+2' +
+        'TGj1axZsx9aJJKYJuFKnnRUciytYd17dmnXBPuxliCovGH9ucWd6B' +
+        'GfUs22EEFtTPOLpOvZnoIvUnyWq90M7CmL2HmcWM2Sw1e6O+Dcno2' +
+        'NfZDrKiadFYwMzyDpiCv21Tuy7dR/0s0Y9RP7tVxwJmlnegV+mkH6' +
+        '12Wm/eosYqcYfyBsHf3BPcRfVKX6r74q6fJSrvqVz9ehf3unRF8C9' +
+        'SbxY/E3yTeqJ/wae54MfjLt0wtjmzzLsgmBL9NCrjsu0qXSPb8iOi' +
+        'GfVqG7Wo35Sae91hyqYlwqGufTP3MdGpAI05czfXPN0GQRfGqd+gR' +
+        'pjFm2ue3kc6ybqhYZ/AkGi6tuY9rJOOm/OpzZXlDdQ7nsNaUhw/DJ' +
+        'WU7z2JfzN4Wvo=');
+
+  if FindBitmap(bmp, bmpX, bmpY) then
+  begin
+    Debug('Yes');
+    FreeBitmap(bmp);
+    Exit(true);
+  end;
+
+  FreeBitmap(bmp);
+  Exit(false);
+end;
+
+
+procedure WaitUntilFlowCalculationIsCompleted()
+begin
+  while(not IsFlowCalculationCompleted()) do
+  begin
+    Wait(50);
+  end;
+end;
+
+
+function TakeBitmapFromConsole(xe, ye: Integer): String
+var
+  bmp, bmpFromClient, bmpX, bmpY, consoleX, consoleY: Integer;
+  bmpString: String
+begin
+  bmp := BitmapFromString(57, 17, 'meJztVMERwzAIYyamYRdW8SaMwj' +
+        'JVwoVyiZ2mqX+N7nKX2ggLWY37gwcP3lBzZXa3Kd1YjTaY8pSeiYl' +
+        'SoVOI3Juvj7LMciAwSyq0MYmbHvsTMa1P7MaJJFoXAZJWr2NEhFRo' +
+        'Jd7TrwN9hDgsTURPb7DXpeEgeG6hYbeYL22p0BExpGKoGCe3vpLaZ' +
+        'dUrS9vrYr7v6CfEhmL83GLWvcqPUjOoXf1pVFeqbXcKoOaEqGYRjM' +
+        'CNDHQHrKk4dzUpkAKR0DMiVldv4/gFMORqHLkqdbFsHRNlTciuZXX' +
+        'ZxfYt2fW7GgflHzmnGGU1WLVsRLSSFsz1i70P/g0vcGmgMA==');
+
+  if FindBitmap(bmp, bmpX, bmpY) then
+  begin
+    Debug('Found console bitmap at (' + IntToStr(bmpX) +',' + IntToStr(bmpY) + ')');
+    consoleX := bmpX + 30;
+    consoleY := bmpY + 30;
+    bmpFromClient := BitmapFromClient(consoleX, consoleY, consoleX+xe, consoleY+ye);
+    bmpString := CreateBitmapString(bmpFromClient);
+    FreeBitmap(bmp);
+    FreeBitmap(bmpFromClient);
+    exit(bmpString);
+  end;
+
+  Debug('Not found console, halt!');
+  Halt();
+end;
+
+function TakeDefaultBitmapFromConsole(): String
+begin
+  exit(TakeBitmapFromConsole(100, 100));
+end;
+
+function HasSettingsChanged(): Boolean
+var
+  curItBmpString, prevItBmpString: String
+begin
+  Wait(2000);
+  prevItBmpString := TakeDefaultBitmapFromConsole();
+  Wait(5000);
+  curItBmpString := TakeDefaultBitmapFromConsole();
+
+  if (CompareText(prevItBmpString, curItBmpString) = 0) then
+  begin
+    Debug('TRUE');
+    exit(true);
+  end
+  else
+  begin
+    Debug('FALSE');
+    exit(false);
+  end;
+end;
+
+procedure HandleSettingsChange()
+begin
+  Wait(2000);
+  PressKey(37);
+  Debug('Pressed');
+  PressKey(13);
+  Debug('Click');
+end;
+
+procedure SolveFlowCalculation()
+begin
+  Debug('SolveFlowCalculation');
+  StartFlowCalculation();
+  if (HasSettingsChanged()) then
+  begin
+    HandleSettingsChange();
+  end;
+  WaitUntilFlowCalculationIsCompleted();
+  CloseOkMessageBox();
+end;
+
+procedure OpenReportDefinitionsLdEditBox()
+begin
+  Debug('OpenReportDefinitionsLdEditBox');
+  SendCommand(''); // Hack
+  SendCommand('(cx-gui-do cx-set-list-tree-selections "NavigationPane*List_Tree1" (list "Solution"))(cx-gui-do cx-set-list-tree-selections "NavigationPane*List_Tree1" (list "Solution|Report Definitions|ld"))(cx-gui-do cx-list-tree-right-click "NavigationPane*List_Tree1" )');
+  ReplaceThisWaitMethod();
+end;
+
+procedure EditLd()
+begin
+  SendSilentCommand('(cx-gui-do cx-activate-item "MenuBar*PopupMenuTree-ld*Edit...")');
+  ReplaceThisWaitMethod();
+end;
+
+procedure ComputeLd()
+begin
+  Debug('ComputeLd');
+  SendCommand(''); // Hack
+  SendCommand('(cx-gui-do cx-activate-item "Expression Report Definition*PanelButtons*PushButton5(Compute)")');
+  Debug('Computed');
+  ReplaceThisWaitMethod();
+  SendCommand('(cx-gui-do cx-activate-item "Expression Report Definition*PanelButtons*PushButton2(Cancel)")');
+  ReplaceThisWaitMethod();
+end;
+
+procedure ComputeObservable()
+begin
+  Debug('ComputeObservable');
+  OpenReportDefinitionsLdEditBox();
+  EditLd();
+  ComputeLd();
+end;
+
+procedure CtrlC()
+begin
+  KeyDown(17);
+  wait(100);
+  KeyDown($43);
+  KeyUp($43);
+  wait(100);
+  KeyUp(17);
+end;
+
+procedure ClipObservable(bmpEndX, bmpCenterY : integer)
+begin
+  MoveMouse(bmpEndX, bmpCenterY);
+  HoldMouse(bmpEndX, bmpCenterY, mouse_Left);
+  MoveMouse(bmpEndX + 200, bmpCenterY);
+  wait(100);
+  ReleaseMouse(bmpEndX + 200, bmpCenterY, mouse_Left);
+  wait(100);
+end;
+
+function ParseObservable(s: string): Extended
+var
+   value: Extended;
+begin
+   exit(StrToFloat(Trim(s)));
+end;
+
+function ReadObservable(): Extended
+var
+  bmp, bmpX, bmpY, bmpEndX, bmpCenterY: Integer;
+  observableRawValue: String;
+  observableValue: Extended
+begin
+  bmp := BitmapFromString(26, 22, 'meJztkssNwDAIQz0XAzGPp2EZhn' +
+        'Hp51JVidr0Uql5JxQTy5BIk3GMCcABKa4qPFpSBze2rnSkm24eFdg' +
+        'qc7i9dGOKZlKu58yXk9YmFb7X5ejw77gNT1pN2+84qL0rqfMrwEjD' +
+        'o2yTyZ9ZAHuaVWw=');
+
+  Debug('ComputeObservable');
+  if FindBitmap(bmp, bmpX, bmpY) then
+  begin
+    ClipObservable(bmpX + 26, bmpY + 11);
+    CtrlC();
+    observableRawValue := GetClipboard();
+    Debug('Found observable LD: '+ observableRawValue);
+    observableValue := ParseObservable(observableRawValue);
+    FreeBitmap(bmp);
+    exit(observableValue);
+  end
+  else
+  begin
+    Debug('Not found observable, halt!');
+    Halt();
+  end;
+end;
+
+function IsAlgorithmFinished(prevItValue, curItValue: Extended): Boolean
+
+begin
+  Debug('IsAlgorithmFinished');
+  if (prevItValue = 123445436.94324) then
+    Exit(false);
+
+  Exit(Abs(prevItValue - curItValue) < 0.001);
+end;
+
+procedure PrintReport(resultArray: array of Extended)
+var
+  i: Integer;
+begin
+  WriteLn('#---------RESULT LIST-----------#');
+  for i := 1 to length(resultArray) do
+  begin
+    WriteLn(IntToStr(i) + ') ' + FloatToStr(resultArray[i-1]));
+  end;
+  WriteLn('#-------------------------------#');
+  Halt();
+end;
+
+
+procedure StartAdjointCalculation()
+begin
+  SendCommand('');
+  SendCommand('(cx-gui-do cx-activate-item "Ribbon*Frame1*Frame9(Design)*Table1*Table3(Adjoint-Based)*PushButton5(Calculate)")');
+  ReplaceThisWaitMethod();
+  SendCommand('(cx-gui-do cx-activate-item "Run Adjoint Calculation*Table1*PushButton4(Calculate)")');
+  ReplaceThisWaitMethod();
+end;
+
+procedure CloseAdjointCalculationBox()
+begin
+SendCommand('(cx-gui-do cx-activate-item "Run Adjoint Calculation*PanelButtons*PushButton1(Close)")');
+end;
+
+
+procedure WaitUntilAdjointCalculationIsFinished()
+var
+curItBmpString, prevItBmpString: String
+begin
+  prevItBmpString := 'A';
+  curItBmpString := 'B';
+  while CompareText(prevItBmpString, curItBmpString) <> 0 do
+  begin
+    Wait(10000); // Higher for slower computers, lower for faster computers
+    prevItBmpString := curItBmpString;
+    curItBmpString := TakeDefaultBitmapFromConsole();
+    Debug('Prev bitmap:' + prevItBmpString);
+    Debug('Cur bitmap:' + curItBmpString);
+  end;
+end;
+
+procedure CalculateAdjoint()
+begin
+  Debug('CalculateAdjoint');
+  StartAdjointCalculation();
+  WaitUntilAdjointCalculationIsFinished();
+  CloseAdjointCalculationBox();
+end;
+
+
+procedure StartDesignCalcultion()
+begin
+  SendCommand('');
+  SendCommand('(cx-gui-do cx-activate-item "Ribbon*Frame1*Frame9(Design)*Table1*Table3(Adjoint-Based)*PushButton7(Design Tool)")');
+  ReplaceThisWaitMethod();
+  SendCommand('(cx-gui-do cx-activate-item "Design Tool*Frame1*Frame1(Design Change)*Table1*Table2*ButtonBox1(Commands)*PushButton3(Calculate Design Change)")');
+  ReplaceThisWaitMethod();
+end;
+
+function IsDesignChangeCalculationCompleted: Boolean
+var
+  bmp, bmpX, bmpY: Integer;
+begin
+  bmp := BitmapFromString(162, 31, 'meJztV+2R6yAMdF0UpHpUDc1QD' +
+        'E9osU62ISGZF99kTvsj41EMWn2wyLUGAoFAIBAIBAKBQCAQCAQCgc' +
+        'C3YtuRtq1memMHLpW2VGv+79wMG2USep908b1YSU6SImlxizwnqoX' +
+        'vYvcaKPFfqLJWI7266mlyrMrt5SxFTjDigFPaaunLc6lbIhhJ+kG3' +
+        'lUZqlmMvUZblScSBWf5prSYbpmZKXTQe9pI5kjeJeuNJIInotByOx' +
+        'MgtMwXMh46ulGZhrlNilxCx5CaMlFQXpVISMwjIgzwlTZRYimbbDq' +
+        'DkvPFPG/K/OYDkjKfFLr5eqjIaSX4Ld4skjol7AmVffTM3iaZDWZ0' +
+        'XWc7Jcp7BH3GhS3WbbcZHJYVLZntGSiVXuqr45aXgrUpc0J9DR0NK' +
+        'szAXKUm03Fq9M0AGcHmVkltby996alD9vPsitfqk7Vv9lMB7H/L0E' +
+        'Uns64ptLqxzfu5rsGqdtp+R4w3uq3zaUMmofY/OB3XFTLKGOSHu/S' +
+        'ywKl8dDSnNwlykZLrno7Y3wdaqbP3gFy5WecjTR9R67Hjorrgq9on' +
+        '/IOpcrJH6wt+ocp/6VME858UqPw3zMaXbqjzk+XaVvRa1a/d4T2Vs' +
+        'pUYvF53JRLGbUO2KvVhlr9IiyEkyp3o1rLJex+01KOTM0ZDSMMx1S' +
+        'jPFHlZZxlpTbKOHPUHesmRUMQnoHgOeDxQbZ/8ktsMvKXbDBgYb+D' +
+        'Ij3sSNM9N2jDp2mjCkSRokKD9aXOFHHZQYM56kougFbcttpCFmhDZ' +
+        'zdKU0DHOdkl/upy/cHSgcpimZEjh1YjZ9nSjZQOiDujryPP305ftk' +
+        'WOWPQgJ547vgo7if0mPt+l7YF8HTL5Tb8IuUICk3n69AIBAIBAKBQ' +
+        'CAQCAQCgUDgj+Af+k3v3A==');
+
+  if FindBitmap(bmp, bmpX, bmpY) then
+  begin
+    Debug('Yes');
+    FreeBitmap(bmp);
+    Exit(true);
+  end;
+
+  FreeBitmap(bmp);
+  Exit(false);
+end;
+
+
+procedure WaitUntilDesignChangeCalculationIsCompleted()
+begin
+  while(not IsDesignChangeCalculationCompleted()) do
+  begin
+    Wait(50);
+  end;
+end;
+
+procedure CloseDesignChange()
+begin
+  SendCommand('');
+  SendCommand('(cx-gui-do cx-activate-item "Design Tool*PanelButtons*PushButton1(Close)")');
+end;
+
+procedure CalculateDesignChange()
+begin
+  Debug('CalculateDesignChange');
+  StartDesignCalcultion();
+  WaitUntilDesignChangeCalculationIsCompleted();
+  CloseDesignChange();
+end;
+
+procedure Calculate()
+var
+  prevItValue, curItValue: Extended;
+  resultArray: array of Extended;
+  resultArrayIndex: Integer;
+begin
+
+  prevItValue := 123445436.94324;
+
+  while true do
+  begin
+    SolveFlowCalculation();
+    ComputeObservable();
+    curItValue := ReadObservable();
+
+    setLength(resultArray, resultArrayIndex + 1);
+    resultArray[resultArrayIndex] := curItValue;
+
+    if (IsAlgorithmFinished(prevItValue, curItValue)) then
+    begin
+      PrintReport(resultArray);
+    end;
+
+    resultArrayIndex := resultArrayIndex + 1;
+    prevItValue := curItValue;
+
+    CalculateAdjoint();
+    CalculateDesignChange();
+  end;
+end;
+
+procedure ClearScr()
+begin
+  SendCommand('');
+  SendCommand('');
+  SendCommand('');
+  SendCommand('');
+  SendCommand('');
+end;
+
+begin
+  //ClearScr();
+
+  Calculate();
+  //CloseDesignChange();
+end;
