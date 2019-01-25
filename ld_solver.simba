@@ -474,7 +474,7 @@ begin
 end;
 
 begin
-  //ClearScr();
+  ClearScr();
 
   Calculate();
   //CloseDesignChange();
