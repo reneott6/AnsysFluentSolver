@@ -219,6 +219,7 @@ begin
   Debug('OpenReportDefinitionsLdEditBox');
   SendCommand(''); // Hack
   SendCommand('(cx-gui-do cx-set-list-tree-selections "NavigationPane*List_Tree1" (list "Solution|Report Definitions|ld"))');
+  ReplaceThisWaitMethod();
   SendCommand('(cx-gui-do cx-list-tree-right-click "NavigationPane*List_Tree1" )');
   ReplaceThisWaitMethod();
 end;
@@ -467,11 +468,12 @@ end;
 
 procedure ClearScr()
 begin
-  SendCommand('');
-  SendCommand('');
-  SendCommand('');
-  SendCommand('');
-  SendCommand('');
+  ActivateConsole();
+  SendSilentCommand('');
+  SendSilentCommand('');
+  SendSilentCommand('');
+  SendSilentCommand('');
+  SendSilentCommand('');
 end;
 
 begin
