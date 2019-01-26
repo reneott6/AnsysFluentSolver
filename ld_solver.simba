@@ -99,7 +99,7 @@ end;
 
 function IsFlowCalculationCompleted: Boolean
 var
-  bmp, bmpX, bmpY: Integer;
+  w, h, bmp, bmpX, bmpY: Integer;
 begin
   bmp := BitmapFromString(169, 19, 'meJztVoutwyAMZC4P5Hk8DcswD' +
         'O/ACY8EQ6NWqdrKJ1WKUn9z5nDODofD4XA4HA6Hw+FwOByO70NMOR' +
@@ -117,7 +117,8 @@ begin
         'pjFm2ue3kc6ybqhYZ/AkGi6tuY9rJOOm/OpzZXlDdQ7nsNaUhw/DJ' +
         'WU7z2JfzN4Wvo=');
 
-  if FindBitmap(bmp, bmpX, bmpY) then
+  GetClientDimensions(w, h);
+  if FindBitmapIn(bmp, bmpX, bmpY, 0, 0, w-1, h-1) then
   begin
     Debug('Yes');
     FreeBitmap(bmp);
@@ -278,7 +279,7 @@ end;
 
 function ReadObservable(): Extended
 var
-  bmp, bmpX, bmpY, bmpEndX, bmpCenterY: Integer;
+  w, h, bmp, bmpX, bmpY, bmpEndX, bmpCenterY: Integer;
   observableRawValue: String;
   observableValue: Extended
 begin
@@ -286,9 +287,9 @@ begin
         'Hp51JVidr0Uql5JxQTy5BIk3GMCcABKa4qPFpSBze2rnSkm24eFdg' +
         'qc7i9dGOKZlKu58yXk9YmFb7X5ejw77gNT1pN2+84qL0rqfMrwEjD' +
         'o2yTyZ9ZAHuaVWw=');
-
+  GetClientDimensions(w, h);
   Debug('ComputeObservable');
-  if FindBitmap(bmp, bmpX, bmpY) then
+  if FindBitmapIn(bmp, bmpX, bmpY, 0, 0, w-1, h-1) then
   begin
     ClipObservable(bmpX + 26, bmpY + 11);
     CtrlC();
@@ -476,8 +477,10 @@ begin
   SendSilentCommand('');
 end;
 
+
 begin
-  ClearScr();
-  Calculate();
+  //ClearScr();
+  //Calculate();
   //ComputeObservable();
+ReadObservable();
 end;
