@@ -118,7 +118,7 @@ begin
         'WU7z2JfzN4Wvo=');
 
   GetClientDimensions(w, h);
-  if FindBitmapIn(bmp, bmpX, bmpY, 0, 0, w-1, h-1) then
+  if FindBitmapSpiralTolerance(bmp, bmpX, bmpY, 0, 0, w-1, h-1, 2) then
   begin
     Debug('Yes');
     FreeBitmap(bmp);
@@ -289,7 +289,7 @@ begin
         'o2yTyZ9ZAHuaVWw=');
   GetClientDimensions(w, h);
   Debug('ComputeObservable');
-  if FindBitmapIn(bmp, bmpX, bmpY, 0, 0, w-1, h-1) then
+  if FindBitmapSpiralTolerance(bmp, bmpX, bmpY, 0, 0, w-1, h-1, 2) then
   begin
     ClipObservable(bmpX + 26, bmpY + 11);
     CtrlC();
