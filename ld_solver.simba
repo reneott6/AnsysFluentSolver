@@ -218,7 +218,8 @@ procedure OpenReportDefinitionsLdEditBox()
 begin
   Debug('OpenReportDefinitionsLdEditBox');
   SendCommand(''); // Hack
-  SendCommand('(cx-gui-do cx-set-list-tree-selections "NavigationPane*List_Tree1" (list "Solution"))(cx-gui-do cx-set-list-tree-selections "NavigationPane*List_Tree1" (list "Solution|Report Definitions|ld"))(cx-gui-do cx-list-tree-right-click "NavigationPane*List_Tree1" )');
+  SendCommand('(cx-gui-do cx-set-list-tree-selections "NavigationPane*List_Tree1" (list "Solution|Report Definitions|ld"))');
+  SendCommand('(cx-gui-do cx-list-tree-right-click "NavigationPane*List_Tree1" )');
   ReplaceThisWaitMethod();
 end;
 
@@ -475,7 +476,6 @@ end;
 
 begin
   ClearScr();
-
   Calculate();
-  //CloseDesignChange();
+  //ComputeObservable();
 end;
